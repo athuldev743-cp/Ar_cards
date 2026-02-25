@@ -1,8 +1,29 @@
+/* Ensure the html and body don't have scrollbars */
 html, body { 
   margin: 0; 
   height: 100%; 
+  width: 100%;
   background: #000; 
   overflow: hidden; 
+}
+
+/* Force the MindAR video feed to cover the screen */
+video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  object-fit: cover !important;
+  z-index: -1;
+}
+
+/* Ensure the A-Frame canvas is transparent and full screen */
+.a-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  top: 0;
+  left: 0;
 }
 
 #ui {
@@ -13,9 +34,11 @@ html, body {
   display: flex; 
   gap: 10px; 
   align-items: center;
-  z-index: 9999;
+  z-index: 10000; /* Increased to stay above everything */
   font-family: system-ui, -apple-system, sans-serif;
 }
+
+/* ... keep the rest of your button/overlay styles as they were ... */
 
 .btn {
   border: 0;

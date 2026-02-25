@@ -25,26 +25,31 @@ target0.addEventListener("targetLost", () => {
 });
 
 // --- AR Logic ---
+// Add this helper function inside your script.js
+function fixResize() {
+  window.dispatchEvent(new Event('resize'));
+}
+
 async function startAR() {
   try {
     setStatus("Initializing camera...");
-    
-    // Ensure scene is ready
     scene.setAttribute("visible", "true");
     
     const arSystem = scene.systems["mindar-image-system"];
-    if (!arSystem) throw new Error("AR System not initialized.");
+    if (!arSystem) throw new Error("AR System not found.");
 
-    // Start the tracking system
     await arSystem.start(); 
 
-    // UI Updates
+    // Force a resize calculation after a short delay 
+    // to ensure the video and canvas match the mobile screen
+    setTimeout(fixResize, 300);
+
     overlay.style.display = "none";
     startBtn.style.display = "none";
     stopBtn.style.display = "inline-block";
     setStatus("Point camera at the Joker card.");
   } catch (e) {
-    console.error("AR Start Failure:", e);
+    console.error(e);
     setStatus("AR failed: " + e.message);
     resetButtons();
   }
