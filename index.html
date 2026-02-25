@@ -30,18 +30,28 @@
     renderer="alpha: true; colorManagement: true; antialias: true;"
     embedded
     visible="false"
+    loading-screen="enabled: false"
 >
+    <a-entity
+        id="mindarSystem"
+        mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiScanning: no; uiLoading: no;"
+    ></a-entity>
+
+    <a-assets>
+        <a-asset-item id="jokerModel" src="joker.glb"></a-asset-item>
+    </a-assets>
+
+    <a-camera id="cam" position="0 0 0" look-controls="enabled: false"></a-camera>
+
     <a-entity id="target0" mindar-image-target="targetIndex: 0">
         <a-gltf-model
             id="joker"
             src="#jokerModel"
             position="0 0 0"
-            /* Changed rotation from 0 180 0 to 0 0 0 to make him face forward */
             rotation="0 0 0" 
             scale="0.35 0.35 0.35"
             visible="false"
-            /* This line adds a simple constant spinning animation */
-            animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear"
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
         ></a-gltf-model>
     </a-entity>
 </a-scene>

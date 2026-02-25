@@ -1,32 +1,30 @@
 html, body { 
-  margin: 0; 
-  height: 100%; 
-  width: 100%;
-  /* Changed from #000 to transparent to ensure camera feed is visible */
+  margin: 0; padding: 0;
+  height: 100%; width: 100%;
   background: transparent !important; 
   overflow: hidden; 
 }
 
-/* Force the MindAR video feed to fill the screen behind the 3D scene */
+/* Fixes the white bar on the right */
 .a-canvas {
   width: 100vw !important;
   height: 100vh !important;
-  top: 0;
-  left: 0;
   background-color: transparent !important;
   position: fixed;
+  top: 0; left: 0;
 }
 
-/* Ensure the video feed doesn't have offset issues */
 video {
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   width: 100vw !important;
   height: 100vh !important;
   object-fit: cover !important;
   z-index: -2;
 }
+
+/* Hide the VR button specifically */
+.a-enter-vr { display: none !important; }
 
 #ui {
   position: fixed;
