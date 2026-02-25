@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("[AR]", m); 
     };
 
-    // Tracking Events
     target0.addEventListener("targetFound", () => {
         joker.setAttribute("visible", "true");
         setStatus("Joker found ✅");
@@ -25,34 +24,38 @@ document.addEventListener("DOMContentLoaded", () => {
         setStatus("Target lost...");
     });
 
-  async function startAR() {
-    try {
-        setStatus("Starting camera...");
-        
-        // 1. Make scene visible
-        scene.setAttribute("visible", "true");
-        
-        // 2. CRITICAL: Remove any default background color
-        scene.removeAttribute("background");
-        
-        const arSystem = scene.systems["mindar-image-system"];
-        await arSystem.start(); 
+    async function startAR() {
+        try {
+            setStatus("Starting camera...");
+            scene.setAttribute("visible", "true");
+            scene.removeAttribute("background");
+            
+            const arSystem = scene.systems["mindar-image-system"];
+            await arSystem.start(); 
 
-        // 3. Fix camera resize glitch (ensures full-screen coverage)
-        setTimeout(() => {
-            window.dispatchEvent(new Event('resize'));
-        }, 500);
+            // FORCE FIX: Some mobile browsers hide the video feed 
+            // until a layout change is detected.
+            const video = document.querySelector("video");
+            if (video) {
+                video.style.display = "none";
+                video.offsetHeight; // force reflow
+                video.style.display = "block";
+            }
 
-        overlay.style.display = "none";
-        startBtn.style.display = "none";
-        stopBtn.style.display = "inline-block";
-        setStatus("Point at the Joker card.");
-    } catch (e) {
-        setStatus("AR Error: " + e.message);
-        startBtn.disabled = false;
-        startBtn.textContent = "Start AR";
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 500);
+
+            overlay.style.display = "none";
+            startBtn.style.display = "none";
+            stopBtn.style.display = "inline-block";
+            setStatus("Point at the Joker card.");
+        } catch (e) {
+            setStatus("AR Error: " + e.message);
+            startBtn.disabled = false;
+            startBtn.textContent = "Start AR";
+        }
     }
-}
 
     async function stopAR() {
         const arSystem = scene.systems["mindar-image-system"];
@@ -63,9 +66,10 @@ document.addEventListener("DOMContentLoaded", () => {
         stopBtn.style.display = "none";
         startBtn.disabled = false;
         startBtn2.disabled = false;
+        setStatus("Ready. Tap “Start AR”.");
     }
 
     startBtn.addEventListener("click", startAR);
     startBtn2.addEventListener("click", startAR);
     stopBtn.addEventListener("click", stopAR);
-});
+}); 

@@ -2,11 +2,12 @@ html, body {
   margin: 0; 
   height: 100%; 
   width: 100%;
-  background: #000; 
+  /* Changed from #000 to transparent to ensure camera feed is visible */
+  background: transparent !important; 
   overflow: hidden; 
 }
 
-/* Force the MindAR video feed to fill the screen */
+/* Force the MindAR video feed to fill the screen behind the 3D scene */
 video {
   position: fixed;
   top: 0;
@@ -15,9 +16,10 @@ video {
   height: 100vh !important;
   object-fit: cover !important;
   z-index: -2;
+  /* Ensure the video is not hidden by mobile browser optimizations */
+  display: block !important;
 }
 
-/* Ensure the A-Frame canvas doesn't block the video */
 .a-canvas {
   width: 100% !important;
   height: 100% !important;
@@ -48,7 +50,7 @@ video {
 
 #overlay {
   position: fixed; inset: 0;
-  background: radial-gradient(ellipse at center, rgba(0,0,0,0.75), rgba(0,0,0,0.92));
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.85), rgba(0,0,0,0.95));
   display: flex; align-items: center; justify-content: center;
   z-index: 9998; padding: 24px;
 }
