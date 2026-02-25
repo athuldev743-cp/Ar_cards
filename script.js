@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
     const $ = (id) => document.getElementById(id);
-    
-    // Select all elements
     const scene = $("scene");
     const joker = $("joker");
     const target0 = $("target0");
@@ -16,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("[AR]", m);
     };
 
-    // Tracking Events
     target0.addEventListener("targetFound", () => {
         joker.setAttribute("visible", "true");
         setStatus("Joker found ✅");
@@ -27,27 +24,31 @@ document.addEventListener("DOMContentLoaded", () => {
         setStatus("Target lost...");
     });
 
-   async function startAR() {
-    try {
-        setStatus("Starting camera...");
-        scene.setAttribute("visible", "true");
-        
-        const arSystem = scene.systems["mindar-image-system"];
-        await arSystem.start(); 
+    async function startAR() {
+        try {
+            setStatus("Starting camera...");
+            scene.setAttribute("visible", "true");
+            
+            const arSystem = scene.systems["mindar-image-system"];
+            if (!arSystem) throw new Error("MindAR system not ready.");
 
-        // Trigger multiple resizes to kill the white padding
-        const resizer = () => window.dispatchEvent(new Event('resize'));
-        resizer();
-        setTimeout(resizer, 200);
-        setTimeout(resizer, 1000);
+            await arSystem.start(); 
 
-        document.getElementById("overlay").style.display = "none";
-        document.getElementById("startBtn").style.display = "none";
-        document.getElementById("stopBtn").style.display = "inline-block";
-    } catch (e) {
-        console.error(e);
+            // Snap layout to remove white padding by forcing resize events
+            const fixLayout = () => window.dispatchEvent(new Event('resize'));
+            fixLayout();
+            setTimeout(fixLayout, 300);
+            setTimeout(fixLayout, 1000);
+
+            overlay.style.display = "none";
+            startBtn.style.display = "none";
+            stopBtn.style.display = "inline-block";
+            setStatus("Point at the Joker card.");
+        } catch (e) {
+            console.error(e);
+            setStatus("AR Error: Camera access required");
+        }
     }
-}
 
     async function stopAR() {
         const arSystem = scene.systems["mindar-image-system"];
@@ -57,13 +58,9 @@ document.addEventListener("DOMContentLoaded", () => {
         overlay.style.display = "flex";
         startBtn.style.display = "inline-block";
         stopBtn.style.display = "none";
-        
-        startBtn.disabled = false;
-        startBtn2.disabled = false;
         setStatus("Ready. Tap “Start AR”.");
     }
 
-    // Attach Listeners
     startBtn.addEventListener("click", startAR);
     startBtn2.addEventListener("click", startAR);
     stopBtn.addEventListener("click", stopAR);

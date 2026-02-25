@@ -1,15 +1,14 @@
 html, body { 
   margin: 0; 
   padding: 0;
-  height: 100%; 
   width: 100%;
-  /* Use 'auto' instead of 'hidden' if you want pull-to-refresh, 
-     but 'hidden' is better for AR stability. */
+  height: 100%;
+  /* Disabling overflow prevents scrolling/padding issues but stops pull-to-refresh */
   overflow: hidden; 
   background: transparent !important; 
 }
 
-/* Force the AR layers to fill every pixel of the screen */
+/* Force the 3D canvas to cover every pixel */
 .a-canvas {
   width: 100vw !important;
   height: 100vh !important;
@@ -19,6 +18,7 @@ html, body {
   background-color: transparent !important;
 }
 
+/* Ensure the camera feed is correctly layered at the bottom */
 video {
   position: fixed !important;
   top: 0;
@@ -27,14 +27,6 @@ video {
   height: 100vh !important;
   object-fit: cover !important;
   z-index: -2;
-}
-
-/* Fixes the white bar on mobile browsers with notch/safe areas */
-:root {
-  --sat: env(safe-area-inset-top);
-  --sar: env(safe-area-inset-right);
-  --sab: env(safe-area-inset-bottom);
-  --sal: env(safe-area-inset-left);
 }
 
 #ui {
@@ -48,8 +40,9 @@ video {
 .btn {
   border: 0; padding: 10px 14px; border-radius: 12px;
   font-size: 14px; cursor: pointer;
+  background: #fff; color: #000;
 }
-.btn.primary { background: #fff; color: #000; }
+
 .btn.danger { background: rgba(255, 80, 80, 0.95); color: #fff; }
 
 .pill {
@@ -67,5 +60,5 @@ video {
 #overlayCard {
   max-width: 520px; width: 100%; background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.15); border-radius: 18px;
-  padding: 18px; color: #fff; font-family: system-ui, -apple-system, sans-serif;
+  padding: 18px; color: #fff;
 }
