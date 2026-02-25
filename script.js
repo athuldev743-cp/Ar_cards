@@ -26,37 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setStatus("Target lost...");
     });
 
-    const fixLayout = () => {
-        window.dispatchEvent(new Event('resize'));
-
-        const canvas = document.querySelector('.a-canvas');
-        if (canvas) {
-            canvas.style.position = 'fixed';
-            canvas.style.top = '0';
-            canvas.style.left = '0';
-            canvas.style.width = '100vw';
-            canvas.style.height = '100vh';
-        }
-
-        const overlay2 = document.querySelector('.mindar-ui-overlay');
-        if (overlay2) {
-            overlay2.style.position = 'fixed';
-            overlay2.style.top = '0';
-            overlay2.style.left = '0';
-            overlay2.style.width = '100vw';
-            overlay2.style.height = '100vh';
-        }
-
-        const video = document.querySelector('video');
-        if (video) {
-            video.style.position = 'fixed';
-            video.style.top = '0';
-            video.style.left = '0';
-            video.style.width = '100vw';
-            video.style.height = '100vh';
-            video.style.objectFit = 'cover';
-        }
-    };
+   
 
     async function startAR() {
         try {
