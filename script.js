@@ -26,28 +26,61 @@ document.addEventListener("DOMContentLoaded", () => {
         setStatus("Target lost...");
     });
 
+    const fixLayout = () => {
+        window.dispatchEvent(new Event('resize'));
+
+        const canvas = document.querySelector('.a-canvas');
+        if (canvas) {
+            canvas.style.position = 'fixed';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.width = '100vw';
+            canvas.style.height = '100vh';
+        }
+
+        const overlay2 = document.querySelector('.mindar-ui-overlay');
+        if (overlay2) {
+            overlay2.style.position = 'fixed';
+            overlay2.style.top = '0';
+            overlay2.style.left = '0';
+            overlay2.style.width = '100vw';
+            overlay2.style.height = '100vh';
+        }
+
+        const video = document.querySelector('video');
+        if (video) {
+            video.style.position = 'fixed';
+            video.style.top = '0';
+            video.style.left = '0';
+            video.style.width = '100vw';
+            video.style.height = '100vh';
+            video.style.objectFit = 'cover';
+        }
+    };
+
     async function startAR() {
         try {
             setStatus("Starting camera...");
             scene.setAttribute("visible", "true");
+
+            await new Promise((resolve) => {
+                if (scene.hasLoaded) {
+                    resolve();
+                } else {
+                    scene.addEventListener("loaded", resolve, { once: true });
+                }
+            });
 
             const arSystem = scene.systems["mindar-image-system"];
             if (!arSystem) throw new Error("MindAR system not ready.");
 
             await arSystem.start();
 
-            const fixLayout = () => {
-                window.dispatchEvent(new Event('resize'));
-                const canvas = document.querySelector('.a-canvas');
-                if (canvas) {
-                    canvas.style.width = window.innerWidth + 'px';
-                    canvas.style.height = window.innerHeight + 'px';
-                }
-            };
-
+            // Run immediately and keep retrying for slow devices
             fixLayout();
             setTimeout(fixLayout, 300);
-            setTimeout(fixLayout, 1000);
+            setTimeout(fixLayout, 800);
+            setTimeout(fixLayout, 1500);
 
             overlay.style.display = "none";
             startBtn.style.display = "none";
