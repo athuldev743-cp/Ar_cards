@@ -9,8 +9,10 @@ html, body {
   height: 100%;
   overflow: hidden;
   background: #000;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
+/* AR container */
 .container {
   position: fixed;
   top: 0; left: 0;
@@ -28,17 +30,55 @@ a-scene {
   display: none !important;
 }
 
-#ui {
+/* INTRO SCREEN */
+#intro {
   position: fixed;
-  top: 12px;
-  left: 12px; right: 12px;
+  inset: 0;
+  background: radial-gradient(ellipse at center, #1a0a2e, #0a0a0a);
   display: flex;
-  gap: 10px;
   align-items: center;
-  z-index: 10000;
-  font-family: system-ui, -apple-system, sans-serif;
+  justify-content: center;
+  z-index: 9999;
+  padding: 24px;
 }
 
+#introCard {
+  max-width: 400px;
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 24px;
+  padding: 36px 24px;
+  color: #fff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.joker-icon {
+  font-size: 64px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+#introCard h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+}
+
+#introCard p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+}
+
+/* BUTTONS */
 .btn {
   border: 0;
   padding: 10px 18px;
@@ -50,11 +90,73 @@ a-scene {
   font-weight: 600;
 }
 
+.btn.primary {
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: #fff;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 14px;
+  width: 100%;
+  letter-spacing: 0.5px;
+}
+
+.btn.primary:active {
+  transform: scale(0.97);
+}
+
+.btn.danger {
+  background: rgba(220, 50, 50, 0.9);
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+/* TOP UI BAR */
+#ui {
+  position: fixed;
+  top: 12px;
+  left: 12px; right: 12px;
+  display: none;
+  gap: 10px;
+  align-items: center;
+  z-index: 10000;
+}
+
 .pill {
   flex: 1;
   padding: 10px 12px;
   border-radius: 12px;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.65);
   color: #fff;
   font-size: 14px;
+  backdrop-filter: blur(6px);
+  transition: background 0.4s;
+}
+
+.pill.found {
+  background: rgba(120, 40, 200, 0.8);
+}
+
+/* THUNDER EFFECT */
+#thunder {
+  position: fixed;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 8000;
+}
+
+@keyframes thunderFlash {
+  0%   { opacity: 0; }
+  10%  { opacity: 0.95; }
+  20%  { opacity: 0; }
+  30%  { opacity: 0.7; }
+  40%  { opacity: 0; }
+  60%  { opacity: 0.4; }
+  100% { opacity: 0; }
+}
+
+#thunder.flash {
+  animation: thunderFlash 0.6s ease-out forwards;
 }
