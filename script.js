@@ -1,69 +1,59 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const $ = (id) => document.getElementById(id);
-    const scene = $("scene");
-    const joker = $("joker");
-    const target0 = $("target0");
-    const statusEl = $("status");
-    const overlay = $("overlay");
-    const ui = $("ui");
-    const startBtn = $("startBtn");
-    const startBtn2 = $("startBtn2");
-    const stopBtn = $("stopBtn");
+    const scene = document.getElementById("scene");
+    const joker = document.getElementById("joker");
+    const target0 = document.getElementById("target0");
+    const statusEl = document.getElementById("status");
+    const overlay = document.getElementById("overlay");
+    const ui = document.getElementById("ui");
+    const startBtn = document.getElementById("startBtn");
+    const stopBtn = document.getElementById("stopBtn");
+
+    let arSystem = null;
 
     const setStatus = (m) => {
         statusEl.textContent = m;
         console.log("[AR]", m);
     };
 
+    // Get arSystem once scene is loaded — exactly as official docs show
+    scene.addEventListener("loaded", () => {
+        arSystem = scene.systems["mindar-image-system"];
+        setStatus("Ready");
+    });
+
+    scene.addEventListener("arReady", () => {
+        setStatus("Point at the Joker card.");
+    });
+
+    scene.addEventListener("arError", () => {
+        setStatus("Camera error. Please refresh.");
+    });
+
     target0.addEventListener("targetFound", () => {
-        setTimeout(() => {
-            joker.setAttribute("visible", "true");
-            setStatus("Joker found ✅");
-        }, 100);
+        joker.setAttribute("visible", "true");
+        setStatus("Joker found ✅");
     });
 
     target0.addEventListener("targetLost", () => {
         joker.setAttribute("visible", "false");
-        setStatus("Target lost...");
+        setStatus("Scanning...");
     });
 
-    async function startAR() {
-        try {
-            setStatus("Starting camera...");
-
-            await new Promise((resolve) => {
-                if (scene.hasLoaded) resolve();
-                else scene.addEventListener("loaded", resolve, { once: true });
-            });
-
-            const arSystem = scene.systems["mindar-image-system"];
-            if (!arSystem) throw new Error("MindAR system not ready.");
-
-            await arSystem.start();
-
-            overlay.style.display = "none";
-            ui.style.display = "flex";
-            startBtn.style.display = "none";
-            stopBtn.style.display = "inline-block";
-            setStatus("Point at the Joker card.");
-        } catch (e) {
-            console.error(e);
-            setStatus("AR Error: Camera access required");
+    startBtn.addEventListener("click", async () => {
+        if (!arSystem) {
+            setStatus("Still loading, please wait...");
+            return;
         }
-    }
+        setStatus("Starting camera...");
+        overlay.style.display = "none";
+        ui.style.display = "flex";
+        await arSystem.start();
+    });
 
-    async function stopAR() {
-        const arSystem = scene.systems["mindar-image-system"];
+    stopBtn.addEventListener("click", async () => {
         if (arSystem) await arSystem.stop();
-
         overlay.style.display = "flex";
         ui.style.display = "none";
-        startBtn.style.display = "inline-block";
-        stopBtn.style.display = "none";
-        setStatus("Ready. Tap \"Start AR\".");
-    }
-
-    startBtn.addEventListener("click", startAR);
-    startBtn2.addEventListener("click", startAR);
-    stopBtn.addEventListener("click", stopAR);
+        setStatus("Ready");
+    });
 });

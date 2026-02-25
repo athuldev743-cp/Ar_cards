@@ -11,6 +11,7 @@ html, body {
   background: #000;
 }
 
+/* embedded makes a-scene behave like a normal div, so we stretch it */
 a-scene {
   position: fixed !important;
   top: 0 !important;
@@ -23,36 +24,62 @@ a-scene {
   display: none !important;
 }
 
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.85), rgba(0,0,0,0.95));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 24px;
+}
+
+#overlayCard {
+  max-width: 520px;
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 18px;
+  padding: 24px;
+  color: #fff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 #ui {
   position: fixed;
   left: 12px; right: 12px; top: 12px;
-  display: flex; gap: 10px; align-items: center;
+  display: none;
+  gap: 10px;
+  align-items: center;
   z-index: 10000;
   font-family: system-ui, -apple-system, sans-serif;
 }
 
 .btn {
-  border: 0; padding: 10px 14px; border-radius: 12px;
-  font-size: 14px; cursor: pointer;
-  background: #fff; color: #000;
+  border: 0;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  background: #fff;
+  color: #000;
+  font-weight: 600;
 }
 
-.btn.danger { background: rgba(255, 80, 80, 0.95); color: #fff; }
+.btn.danger {
+  background: rgba(255, 80, 80, 0.95);
+  color: #fff;
+}
 
 .pill {
-  flex: 1; padding: 10px 12px; border-radius: 12px;
-  background: rgba(0,0,0,0.6); color: #fff; font-size: 14px;
-}
-
-#overlay {
-  position: fixed; inset: 0;
-  background: radial-gradient(ellipse at center, rgba(0,0,0,0.85), rgba(0,0,0,0.95));
-  display: flex; align-items: center; justify-content: center;
-  z-index: 9998; padding: 24px;
-}
-
-#overlayCard {
-  max-width: 520px; width: 100%; background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.15); border-radius: 18px;
-  padding: 18px; color: #fff;
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 14px;
 }

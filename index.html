@@ -2,26 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Joker Card AR</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 </head>
 <body>
-    <div id="ui" style="display:none;">
-        <button id="startBtn" class="btn primary">Start AR</button>
-        <button id="stopBtn" class="btn danger" style="display:none;">Back</button>
-        <div id="status" class="pill">Ready. Tap "Start AR".</div>
-        <button class="btn primary" onclick="window.location.reload()">Refresh</button>
-    </div>
-
     <div id="overlay">
         <div id="overlayCard">
             <h1>Joker Card AR</h1>
             <p>Allow camera permission, then point at the Joker card.</p>
-            <button id="startBtn2" class="btn primary" style="width:100%;">Start AR</button>
+            <button id="startBtn" class="btn">Start AR</button>
         </div>
+    </div>
+
+    <div id="ui">
+        <button id="stopBtn" class="btn danger">Back</button>
+        <div id="status" class="pill">Loading...</div>
+        <button class="btn" onclick="window.location.reload()">Refresh</button>
     </div>
 
     <a-scene
@@ -32,6 +31,7 @@
         vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: false"
         loading-screen="enabled: false"
+        embedded
     >
         <a-assets>
             <a-asset-item id="jokerModel" src="joker.glb"></a-asset-item>
