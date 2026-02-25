@@ -182,51 +182,27 @@
         setStatus("Target lost… move closer, better light.");
       });
 
-      async function startAR() {
-        try {
-          if (!window.isSecureContext) {
-            setStatus("Camera blocked: not HTTPS.");
-            return;
-          }
-          if (!navigator.mediaDevices?.getUserMedia) {
-            setStatus("Camera not supported in this browser.");
-            return;
-          }
+     // Remove the manual getUserMedia test. 
+// Let MindAR handle the heavy lifting:
+async function startAR() {
+  try {
+    scene.setAttribute("visible", "true");
+    setStatus("Starting AR...");
+    
+    // Grab the system directly from the scene
+    const arSystem = scene.systems["mindar-image-system"];
+    await arSystem.start(); 
 
-          // Force permission prompt early (helps reliability on iOS)
-          setStatus("Requesting camera permission…");
-          const testStream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: "environment" },
-            audio: false
-          });
-          testStream.getTracks().forEach(t => t.stop());
+    overlay.style.display = "none";
+    startBtn.style.display = "none";
+    stopBtn.style.display = "inline-block";
+    setStatus("Point camera at the Joker card.");
+  } catch (e) {
+    setStatus("AR failed: " + e.message);
+  }
+}
 
-          // Show the scene
-          scene.setAttribute("visible", "true");
-
-          // Start MindAR system
-          setStatus("Starting AR…");
-          const arSystem = scene.systems["mindar-image-system"];
-          if (!arSystem) {
-            setStatus("MindAR system not initialized (script load issue).");
-            return;
-          }
-
-          await arSystem.start();
-
-          overlay.style.display = "none";
-          startBtn.style.display = "none";
-          stopBtn.style.display = "inline-block";
-          setStatus("Point camera at the Joker card.");
-        } catch (e) {
-          console.error(e);
-          setStatus("AR failed: " + (e?.message || e));
-          // Keep overlay visible so user can retry
-          startBtn.disabled = false;
-          startBtn2.disabled = false;
-        }
-      }
-
+         
       async function stopAR() {
         try {
           setStatus("Stopping AR…");
