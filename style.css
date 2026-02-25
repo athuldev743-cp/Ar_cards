@@ -8,6 +8,16 @@ html, body {
 }
 
 /* Force the MindAR video feed to fill the screen behind the 3D scene */
+.a-canvas {
+  width: 100vw !important;
+  height: 100vh !important;
+  top: 0;
+  left: 0;
+  background-color: transparent !important;
+  position: fixed;
+}
+
+/* Ensure the video feed doesn't have offset issues */
 video {
   position: fixed;
   top: 0;
@@ -16,16 +26,6 @@ video {
   height: 100vh !important;
   object-fit: cover !important;
   z-index: -2;
-  /* Ensure the video is not hidden by mobile browser optimizations */
-  display: block !important;
-}
-
-.a-canvas {
-  width: 100% !important;
-  height: 100% !important;
-  top: 0;
-  left: 0;
-  background-color: transparent !important;
 }
 
 #ui {

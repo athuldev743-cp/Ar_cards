@@ -24,38 +24,31 @@ document.addEventListener("DOMContentLoaded", () => {
         setStatus("Target lost...");
     });
 
-    async function startAR() {
-        try {
-            setStatus("Starting camera...");
-            scene.setAttribute("visible", "true");
-            scene.removeAttribute("background");
-            
-            const arSystem = scene.systems["mindar-image-system"];
-            await arSystem.start(); 
+  async function startAR() {
+    try {
+        setStatus("Starting camera...");
+        scene.setAttribute("visible", "true");
+        scene.removeAttribute("background");
+        
+        const arSystem = scene.systems["mindar-image-system"];
+        await arSystem.start(); 
 
-            // FORCE FIX: Some mobile browsers hide the video feed 
-            // until a layout change is detected.
-            const video = document.querySelector("video");
-            if (video) {
-                video.style.display = "none";
-                video.offsetHeight; // force reflow
-                video.style.display = "block";
-            }
-
+        // Force the browser to recalculate the layout 3 times 
+        // to get rid of the white padding bar
+        [100, 300, 1000].forEach(delay => {
             setTimeout(() => {
                 window.dispatchEvent(new Event('resize'));
-            }, 500);
+            }, delay);
+        });
 
-            overlay.style.display = "none";
-            startBtn.style.display = "none";
-            stopBtn.style.display = "inline-block";
-            setStatus("Point at the Joker card.");
-        } catch (e) {
-            setStatus("AR Error: " + e.message);
-            startBtn.disabled = false;
-            startBtn.textContent = "Start AR";
-        }
+        overlay.style.display = "none";
+        startBtn.style.display = "none";
+        stopBtn.style.display = "inline-block";
+        setStatus("Point at the Joker card.");
+    } catch (e) {
+        setStatus("AR Error: " + e.message);
     }
+}
 
     async function stopAR() {
         const arSystem = scene.systems["mindar-image-system"];
