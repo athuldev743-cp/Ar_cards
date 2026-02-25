@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const scene = document.getElementById("scene");
     const joker = document.getElementById("joker");
     const target0 = document.getElementById("target0");
     const statusEl = document.getElementById("status");
@@ -12,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let arReady = false;
     let jokerSound = null;
+    let firstLoad = true;
 
     const setStatus = (m, found = false) => {
         statusEl.textContent = m;
@@ -19,18 +19,14 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("[AR]", m);
     };
 
-    // Thunder flash effect
     const triggerThunder = () => {
         thunder.classList.remove("flash");
-        void thunder.offsetWidth; // force reflow to restart animation
+        void thunder.offsetWidth;
         thunder.classList.add("flash");
     };
 
-    // Play joker sound
     const playSound = () => {
-        if (!jokerSound) {
-            jokerSound = document.getElementById("jokerSound");
-        }
+        if (!jokerSound) jokerSound = document.getElementById("jokerSound");
         if (jokerSound) {
             jokerSound.currentTime = 0;
             jokerSound.play().catch(() => {});
@@ -44,19 +40,48 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // START button — show AR container and let MindAR init
-    startBtn.addEventListener("click", () => {
+    const showAR = () => {
+        intro.style.display = "none";
+        ui.style.display = "flex";
+        arReady = true;
+        setStatus("Point at the Joker card 🃏");
+    };
+
+    startBtn.addEventListener("click", async () => {
         startBtn.textContent = "Loading...";
         startBtn.disabled = true;
         arContainer.style.display = "block";
+
+        if (!firstLoad) {
+            // Scene already initialized, manually start arSystem
+            const scene = document.getElementById("scene");
+
+            // Wait for systems to be available
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const arSystem = scene.systems["mindar-image-system"];
+            if (arSystem) {
+                try {
+                    await arSystem.start();
+                    showAR();
+                } catch (e) {
+                    console.error(e);
+                    setStatus("Camera error — please refresh.");
+                    startBtn.textContent = "Start Camera";
+                    startBtn.disabled = false;
+                    arContainer.style.display = "none";
+                    intro.style.display = "flex";
+                }
+            }
+        }
+        // firstLoad: wait for arReady event to fire naturally
     });
 
-    // AR is live
+    const scene = document.getElementById("scene");
+
     scene.addEventListener("arReady", () => {
-        arReady = true;
-        intro.style.display = "none";
-        ui.style.display = "flex";
-        setStatus("Point at the Joker card 🃏");
+        firstLoad = false;
+        showAR();
     });
 
     scene.addEventListener("arError", () => {
@@ -64,13 +89,13 @@ document.addEventListener("DOMContentLoaded", () => {
         startBtn.textContent = "Start Camera";
         startBtn.disabled = false;
         arContainer.style.display = "none";
+        intro.style.display = "flex";
     });
 
-    // STOP button — go back to intro
-    stopBtn.addEventListener("click", () => {
+    stopBtn.addEventListener("click", async () => {
         const arSystem = scene.systems["mindar-image-system"];
         if (arSystem && arReady) {
-            arSystem.stop();
+            await arSystem.stop();
             arReady = false;
         }
         stopSound();
@@ -80,9 +105,9 @@ document.addEventListener("DOMContentLoaded", () => {
         intro.style.display = "flex";
         startBtn.textContent = "Start Camera";
         startBtn.disabled = false;
+        setStatus("Point at the Joker card 🃏");
     });
 
-    // Joker found — thunder + sound + model
     target0.addEventListener("targetFound", () => {
         console.log("TARGET FOUND");
         triggerThunder();
@@ -96,4 +121,4 @@ document.addEventListener("DOMContentLoaded", () => {
         joker.setAttribute("visible", "false");
         setStatus("Point at the Joker card 🃏");
     });
-});
+}); 
