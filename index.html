@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>King Card AR</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
+
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; }
+      #ar { width: 100%; height: 100%; }
+      .hint {
+        position: fixed; left: 12px; top: 12px;
+        background: rgba(0,0,0,0.55); color: #fff;
+        padding: 10px 12px; border-radius: 10px;
+        font-family: system-ui; font-size: 14px; z-index: 10;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="hint">Point camera at the King card</div>
+    <div id="ar"></div>
+
+    <script>
+      async function start() {
+        const mindarThree = new window.MINDAR.IMAGE.MindARThree({
+          container: document.querySelector("#ar"),
+          imageTargetSrc: "./public/joker.png",
+          maxTrack: 1,
+        });
+
+        const { renderer, scene, camera } = mindarThree;
+
+        // lights
+        scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1.2));
+        const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+        dir.position.set(1, 2, 1);
+        scene.add(dir);
+
+        // ✅ anchor for target index 0 (first image you compiled)
+        const anchor = mindarThree.addAnchor(0);
+
+        // load GLB
+        const loader = new THREE.GLTFLoader();
+        loader.load("./public/joker.glb", (gltf) => {
+          const king = gltf.scene;
+
+          // Tune these 3 values to fit perfectly on the card:
+          king.scale.set(0.35, 0.35, 0.35);   // size
+          king.position.set(0, 0, 0);         // center
+          king.rotation.set(0, 0, 0);         // rotate if needed
+
+          // ✅ THIS is the “projection/binding”
+          anchor.group.add(king);
+        });
+
+        await mindarThree.start();
+        renderer.setAnimationLoop(() => renderer.render(scene, camera));
+      }
+
+      start();
+    </script>
+  </body>
+</html>
