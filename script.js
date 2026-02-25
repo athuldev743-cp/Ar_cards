@@ -14,6 +14,29 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("[AR]", m);
     };
 
+    // defined FIRST before startAR
+    const fixLayout = () => {
+        window.dispatchEvent(new Event('resize'));
+
+        const canvas = document.querySelector('.a-canvas');
+        if (canvas) {
+            canvas.style.position = 'fixed';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.width = '100vw';
+            canvas.style.height = '100vh';
+        }
+
+        const mindarOverlay = document.querySelector('.mindar-ui-overlay');
+        if (mindarOverlay) {
+            mindarOverlay.style.position = 'fixed';
+            mindarOverlay.style.top = '0';
+            mindarOverlay.style.left = '0';
+            mindarOverlay.style.width = '100vw';
+            mindarOverlay.style.height = '100vh';
+        }
+    };
+
     target0.addEventListener("targetFound", () => {
         setTimeout(() => {
             joker.setAttribute("visible", "true");
@@ -25,8 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
         joker.setAttribute("visible", "false");
         setStatus("Target lost...");
     });
-
-   
 
     async function startAR() {
         try {
@@ -46,7 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             await arSystem.start();
 
-            // Run immediately and keep retrying for slow devices
             fixLayout();
             setTimeout(fixLayout, 300);
             setTimeout(fixLayout, 800);
