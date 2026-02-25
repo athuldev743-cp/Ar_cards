@@ -30,7 +30,7 @@
                 <a-gltf-model
                     id="joker"
                     src="#jokerModel"
-                    position="0 0 0"
+                    position="0 0.15 0"
                     rotation="0 0 0"
                     scale="0.35 0.35 0.35"
                     visible="false"
@@ -40,17 +40,19 @@
         </a-scene>
     </div>
 
-    <!-- overlay shown until AR is ready -->
+    <!-- Intro overlay -->
     <div id="overlay">
         <div id="overlayCard">
-            <h1>Joker Card AR</h1>
-            <p>Allow camera permission, then point at the Joker card.</p>
+            <h1>🃏 Joker Card AR</h1>
+            <p>Point your camera at the Joker card to see the magic.</p>
+            <button id="startBtn" class="btn primary">Start Camera</button>
         </div>
     </div>
 
     <!-- UI shown after AR starts -->
     <div id="ui">
-        <div id="status" class="pill">Loading...</div>
+        <div id="status" class="pill">Scanning...</div>
+        <button id="stopBtn" class="btn danger">Stop Camera</button>
         <button class="btn" onclick="window.location.reload()">Refresh</button>
     </div>
 
