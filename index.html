@@ -24,23 +24,18 @@
         </div>
     </div>
 
-    <a-scene
+   <a-scene
     id="scene"
     vr-mode-ui="enabled: false"
-    renderer="alpha: true; colorManagement: true;"
+    device-orientation-permission-ui="enabled: false"
+    renderer="alpha: true; colorManagement: true; antialias: true;"
     loading-screen="enabled: false"
     visible="false"
 >
-    <a-entity
+   <a-entity
         id="mindarSystem"
-        /* Added filter parameters to smooth tracking and reduce shaking */
-        mindar-image="imageTargetSrc: ./targets.mind; 
-                      autoStart: false; 
-                      uiScanning: no; 
-                      uiLoading: no; 
-                      filterMinCF: 0.0001; 
-                      filterBeta: 0.001;"
-    ></a-entity>
+        mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiScanning: no; uiLoading: no; filterMinCF: 0.0001; filterBeta: 0.001;"
+    >
 
     <a-assets>
         <a-asset-item id="jokerModel" src="joker.glb"></a-asset-item>

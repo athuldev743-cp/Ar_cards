@@ -3,12 +3,11 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  /* Disabling overflow prevents scrolling/padding issues but stops pull-to-refresh */
   overflow: hidden; 
   background: transparent !important; 
 }
 
-/* Force the 3D canvas to cover every pixel */
+/* Force the 3D canvas to cover every pixel and ignore browser offsets */
 .a-canvas {
   width: 100vw !important;
   height: 100vh !important;
@@ -18,7 +17,12 @@ html, body {
   background-color: transparent !important;
 }
 
-/* Ensure the camera feed is correctly layered at the bottom */
+/* Force hide the VR/AR buttons that A-Frame injects */
+.a-enter-vr, .a-enter-ar {
+  display: none !important;
+}
+
+/* Ensure the camera feed fills the viewport and sits behind everything */
 video {
   position: fixed !important;
   top: 0;
@@ -36,6 +40,7 @@ video {
   z-index: 10000;
   font-family: system-ui, -apple-system, sans-serif;
 }
+/* ... keep your other button/overlay styles ... */
 
 .btn {
   border: 0; padding: 10px 14px; border-radius: 12px;

@@ -27,31 +27,40 @@ document.addEventListener("DOMContentLoaded", () => {
         setStatus("Target lost...");
     });
 
-    async function startAR() {
-        try {
-            setStatus("Starting camera...");
-            scene.setAttribute("visible", "true");
-            
-            const arSystem = scene.systems["mindar-image-system"];
-            if (!arSystem) throw new Error("MindAR system not ready.");
+   async function startAR() {
+    try {
+        setStatus("Starting camera...");
+        scene.setAttribute("visible", "true");
+        
+        const arSystem = scene.systems["mindar-image-system"];
+        if (!arSystem) throw new Error("MindAR system not ready.");
 
-            await arSystem.start(); 
+        await arSystem.start(); 
 
-            // Snap layout to remove white padding by forcing resize events
-            const fixLayout = () => window.dispatchEvent(new Event('resize'));
-            fixLayout();
-            setTimeout(fixLayout, 300);
-            setTimeout(fixLayout, 1000);
+        // CRITICAL: Force the canvas to snap to the full screen
+        const fixLayout = () => {
+            window.dispatchEvent(new Event('resize'));
+            // Manually force canvas style if browser is being stubborn
+            const canvas = document.querySelector('.a-canvas');
+            if (canvas) {
+                canvas.style.width = window.innerWidth + 'px';
+                canvas.style.height = window.innerHeight + 'px';
+            }
+        };
 
-            overlay.style.display = "none";
-            startBtn.style.display = "none";
-            stopBtn.style.display = "inline-block";
-            setStatus("Point at the Joker card.");
-        } catch (e) {
-            console.error(e);
-            setStatus("AR Error: Camera access required");
-        }
+        fixLayout();
+        setTimeout(fixLayout, 300);
+        setTimeout(fixLayout, 1000);
+
+        overlay.style.display = "none";
+        startBtn.style.display = "none";
+        stopBtn.style.display = "inline-block";
+        setStatus("Point at the Joker card.");
+    } catch (e) {
+        console.error(e);
+        setStatus("AR Error: Camera access required");
     }
+}
 
     async function stopAR() {
         const arSystem = scene.systems["mindar-image-system"];
