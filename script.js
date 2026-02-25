@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const joker = document.getElementById("joker");
-    const target0 = document.getElementById("target0");
     const statusEl = document.getElementById("status");
     const ui = document.getElementById("ui");
     const intro = document.getElementById("intro");
@@ -8,10 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const startBtn = document.getElementById("startBtn");
     const stopBtn = document.getElementById("stopBtn");
     const thunder = document.getElementById("thunder");
+    const scene = document.getElementById("scene");
 
     let arReady = false;
     let jokerSound = null;
     let firstLoad = true;
+    let listenersAdded = false;
 
     const setStatus = (m, found = false) => {
         statusEl.textContent = m;
@@ -40,11 +40,46 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
+    const addTargetListeners = () => {
+        if (listenersAdded) return;
+        listenersAdded = true;
+
+        const target0 = document.getElementById("target0");
+        const joker = document.getElementById("joker");
+
+        if (!target0 || !joker) {
+            // retry if not ready yet
+            setTimeout(addTargetListeners, 300);
+            listenersAdded = false;
+            return;
+        }
+
+        console.log("Adding target listeners");
+
+        target0.addEventListener("targetFound", () => {
+            console.log("TARGET FOUND");
+            const j = document.getElementById("joker");
+            triggerThunder();
+            playSound();
+            j.setAttribute("visible", "true");
+            setStatus("🃏 The Joker appears!", true);
+        });
+
+        target0.addEventListener("targetLost", () => {
+            console.log("TARGET LOST");
+            const j = document.getElementById("joker");
+            stopSound();
+            j.setAttribute("visible", "false");
+            setStatus("Point at the Joker card 🃏");
+        });
+    };
+
     const showAR = () => {
         intro.style.display = "none";
         ui.style.display = "flex";
         arReady = true;
         setStatus("Point at the Joker card 🃏");
+        addTargetListeners();
     };
 
     startBtn.addEventListener("click", async () => {
@@ -53,12 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
         arContainer.style.display = "block";
 
         if (!firstLoad) {
-            // Scene already initialized, manually start arSystem
-            const scene = document.getElementById("scene");
-
-            // Wait for systems to be available
-            await new Promise(resolve => setTimeout(resolve, 500));
-
+            await new Promise(resolve => setTimeout(resolve, 800));
             const arSystem = scene.systems["mindar-image-system"];
             if (arSystem) {
                 try {
@@ -74,12 +104,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         }
-        // firstLoad: wait for arReady event to fire naturally
     });
 
-    const scene = document.getElementById("scene");
-
     scene.addEventListener("arReady", () => {
+        console.log("AR READY");
         firstLoad = false;
         showAR();
     });
@@ -99,26 +127,13 @@ document.addEventListener("DOMContentLoaded", () => {
             arReady = false;
         }
         stopSound();
-        joker.setAttribute("visible", "false");
+        const joker = document.getElementById("joker");
+        if (joker) joker.setAttribute("visible", "false");
         arContainer.style.display = "none";
         ui.style.display = "none";
         intro.style.display = "flex";
         startBtn.textContent = "Start Camera";
         startBtn.disabled = false;
-        setStatus("Point at the Joker card 🃏");
+        listenersAdded = false; // reset so listeners re-added on next start
     });
-
-    target0.addEventListener("targetFound", () => {
-        console.log("TARGET FOUND");
-        triggerThunder();
-        playSound();
-        joker.setAttribute("visible", "true");
-        setStatus("🃏 The Joker appears!", true);
-    });
-
-    target0.addEventListener("targetLost", () => {
-        stopSound();
-        joker.setAttribute("visible", "false");
-        setStatus("Point at the Joker card 🃏");
-    });
-}); 
+});
