@@ -27,7 +27,7 @@
     <div class="container" id="arContainer" style="display:none;">
         <a-scene
             id="scene"
-            mindar-image="imageTargetSrc: ./targets.mind; uiScanning: no; uiLoading: no; filterMinCF: 0.0001; filterBeta: 0.001;"
+            mindar-image="imageTargetSrc: ./targets.mind; uiScanning: no; uiLoading: no; filterMinCF: 0.00001; filterBeta: 0.01; missTolerance: 10; warmupTolerance: 3;"
             color-space="sRGB"
             renderer="colorManagement: true; antialias: true;"
             vr-mode-ui="enabled: false"
