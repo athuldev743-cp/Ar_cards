@@ -1,22 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const scene = document.getElementById("scene");
+    const joker = document.getElementById("joker");
+    const target0 = document.getElementById("target0");
     const statusEl = document.getElementById("status");
     const ui = document.getElementById("ui");
     const intro = document.getElementById("intro");
-    const arContainer = document.getElementById("arContainer");
     const startBtn = document.getElementById("startBtn");
     const stopBtn = document.getElementById("stopBtn");
     const thunder = document.getElementById("thunder");
-    const scene = document.getElementById("scene");
 
     let jokerSound = null;
-
-    // Always start with intro visible, container hidden
-    intro.style.display = "flex";
-    arContainer.style.display = "none";
-    ui.style.display = "none";
-
-    // Clear any stale sessionStorage on fresh page load
-    sessionStorage.removeItem("arStart");
 
     const setStatus = (m, found = false) => {
         statusEl.textContent = m;
@@ -45,49 +38,49 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    startBtn.addEventListener("click", () => {
-        intro.style.display = "none";
-        arContainer.style.display = "block";
-        startBtn.disabled = true;
-        startBtn.textContent = "Loading...";
-    });
-
-    stopBtn.addEventListener("click", () => {
-        stopSound();
-        window.location.reload();
-    });
-
+    // AR loads in background, show intro on top
+    // When AR is ready, enable the start button
     scene.addEventListener("arReady", () => {
         console.log("AR READY");
-        ui.style.display = "flex";
-        setStatus("Point at the Joker card 🃏");
-
-        const target0 = document.getElementById("target0");
-        const joker = document.getElementById("joker");
-
-        target0.addEventListener("targetFound", () => {
-            console.log("TARGET FOUND");
-            triggerThunder();
-            playSound();
-            joker.setAttribute("visible", "true");
-            setStatus("🃏 The Joker appears!", true);
-        });
-
-        target0.addEventListener("targetLost", () => {
-            console.log("TARGET LOST");
-            stopSound();
-            joker.setAttribute("visible", "false");
-            setStatus("Point at the Joker card 🃏");
-        });
+        startBtn.disabled = false;
+        startBtn.textContent = "Start AR";
     });
 
     scene.addEventListener("arError", () => {
         console.log("AR ERROR");
+        startBtn.textContent = "Camera Error - Refresh";
+    });
+
+    // Start button just hides intro — camera already running
+    startBtn.addEventListener("click", () => {
+        intro.style.display = "none";
+        ui.style.display = "flex";
+        setStatus("Point at the Joker card 🃏");
+    });
+
+    // Stop button shows intro again
+    stopBtn.addEventListener("click", () => {
+        stopSound();
+        joker.setAttribute("visible", "false");
         intro.style.display = "flex";
-        arContainer.style.display = "none";
         ui.style.display = "none";
         startBtn.disabled = false;
-        startBtn.textContent = "Start Camera";
-        setStatus("Camera error — please refresh.");
+        startBtn.textContent = "Start AR";
+        setStatus("Point at the Joker card 🃏");
+    });
+
+    target0.addEventListener("targetFound", () => {
+        console.log("TARGET FOUND");
+        triggerThunder();
+        playSound();
+        joker.setAttribute("visible", "true");
+        setStatus("🃏 The Joker appears!", true);
+    });
+
+    target0.addEventListener("targetLost", () => {
+        console.log("TARGET LOST");
+        stopSound();
+        joker.setAttribute("visible", "false");
+        setStatus("Point at the Joker card 🃏");
     });
 });

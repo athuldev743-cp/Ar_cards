@@ -9,10 +9,8 @@ html, body {
   height: 100%;
   overflow: hidden;
   background: #000;
-  font-family: system-ui, -apple-system, sans-serif;
 }
 
-/* AR container */
 .container {
   position: fixed;
   top: 0; left: 0;
@@ -30,7 +28,29 @@ a-scene {
   display: none !important;
 }
 
-/* INTRO SCREEN */
+#thunder {
+  position: fixed;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 8000;
+}
+
+@keyframes thunderFlash {
+  0%   { opacity: 0; }
+  10%  { opacity: 0.95; }
+  20%  { opacity: 0; }
+  30%  { opacity: 0.7; }
+  40%  { opacity: 0; }
+  60%  { opacity: 0.4; }
+  100% { opacity: 0; }
+}
+
+#thunder.flash {
+  animation: thunderFlash 0.6s ease-out forwards;
+}
+
 #intro {
   position: fixed;
   inset: 0;
@@ -69,7 +89,6 @@ a-scene {
 #introCard h1 {
   font-size: 26px;
   font-weight: 700;
-  color: #fff;
 }
 
 #introCard p {
@@ -78,7 +97,17 @@ a-scene {
   line-height: 1.6;
 }
 
-/* BUTTONS */
+#ui {
+  position: fixed;
+  top: 12px;
+  left: 12px; right: 12px;
+  display: none;
+  gap: 10px;
+  align-items: center;
+  z-index: 10000;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
 .btn {
   border: 0;
   padding: 10px 18px;
@@ -100,63 +129,26 @@ a-scene {
   letter-spacing: 0.5px;
 }
 
-.btn.primary:active {
-  transform: scale(0.97);
+.btn.primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn.danger {
   background: rgba(220, 50, 50, 0.9);
   color: #fff;
-  padding: 8px 16px;
-  font-size: 13px;
-}
-
-/* TOP UI BAR */
-#ui {
-  position: fixed;
-  top: 12px;
-  left: 12px; right: 12px;
-  display: none;
-  gap: 10px;
-  align-items: center;
-  z-index: 10000;
 }
 
 .pill {
   flex: 1;
   padding: 10px 12px;
   border-radius: 12px;
-  background: rgba(0,0,0,0.65);
+  background: rgba(0,0,0,0.6);
   color: #fff;
   font-size: 14px;
   backdrop-filter: blur(6px);
-  transition: background 0.4s;
 }
 
 .pill.found {
   background: rgba(120, 40, 200, 0.8);
-}
-
-/* THUNDER EFFECT */
-#thunder {
-  position: fixed;
-  inset: 0;
-  background: white;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 8000;
-}
-
-@keyframes thunderFlash {
-  0%   { opacity: 0; }
-  10%  { opacity: 0.95; }
-  20%  { opacity: 0; }
-  30%  { opacity: 0.7; }
-  40%  { opacity: 0; }
-  60%  { opacity: 0.4; }
-  100% { opacity: 0; }
-}
-
-#thunder.flash {
-  animation: thunderFlash 0.6s ease-out forwards;
 }

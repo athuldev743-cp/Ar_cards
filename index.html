@@ -9,22 +9,8 @@
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 </head>
 <body>
-
-    <!-- INTRO SCREEN -->
-    <div id="intro">
-        <div id="introCard">
-            <div class="joker-icon">🃏</div>
-            <h1>Joker Card AR</h1>
-            <p>Point your camera at the Joker card to unleash the chaos.</p>
-            <button id="startBtn" class="btn primary">Start Camera</button>
-        </div>
-    </div>
-
-    <!-- THUNDER OVERLAY -->
-    <div id="thunder"></div>
-
-    <!-- AR CONTAINER -->
-    <div class="container" id="arContainer" style="display:none;">
+    <!-- AR always running in background -->
+    <div class="container">
         <a-scene
             id="scene"
             mindar-image="imageTargetSrc: ./targets.mind; uiScanning: no; uiLoading: no; filterMinCF: 0.00001; filterBeta: 0.01; missTolerance: 10; warmupTolerance: 3;"
@@ -56,11 +42,24 @@
         </a-scene>
     </div>
 
-    <!-- TOP UI -->
+    <!-- Thunder overlay -->
+    <div id="thunder"></div>
+
+    <!-- Intro screen on top -->
+    <div id="intro">
+        <div id="introCard">
+            <div class="joker-icon">🃏</div>
+            <h1>Joker Card AR</h1>
+            <p>Point your camera at the Joker card to unleash the chaos.</p>
+            <button id="startBtn" class="btn primary">Start AR</button>
+        </div>
+    </div>
+
+    <!-- UI bar -->
     <div id="ui">
         <div id="status" class="pill">Loading...</div>
         <button id="stopBtn" class="btn danger">✕ Stop</button>
-         <button class="btn" onclick="window.location.reload()">↺ Refresh</button>
+        <button class="btn" onclick="window.location.reload()">↺ Refresh</button>
     </div>
 
     <script src="script.js"></script>
