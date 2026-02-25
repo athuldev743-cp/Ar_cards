@@ -1,50 +1,58 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Joker Card AR</title>
-    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="style.css">
-
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://unpkg.com/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-  </head>
-
-  <body>
+</head>
+<body>
     <div id="ui">
-      <button id="startBtn" class="btn primary">Start AR</button>
-      <button id="stopBtn" class="btn danger" style="display:none;">Back</button>
-      <div id="status" class="pill">Ready. Tap “Start AR”.</div>
+        <button id="startBtn" class="btn primary">Start AR</button>
+        <button id="stopBtn" class="btn danger" style="display:none;">Back</button>
+        <div id="status" class="pill">Ready. Tap “Start AR”.</div>
     </div>
 
     <div id="overlay">
-      <div id="overlayCard">
-        <h1>Joker Card AR</h1>
-        <p>Tap <b>Start AR</b>, allow camera permission, then point the camera at the Joker card.</p>
-        <ul id="tips">
-          <li>Use a <b>sharp, high-contrast</b> card image.</li>
-          <li>Avoid <b>glossy reflections</b> for better tracking.</li>
-          <li>Keep the card well-lit and steady.</li>
-        </ul>
-        <button id="startBtn2" class="btn primary" style="width:100%;">Start AR</button>
-      </div>
+        <div id="overlayCard">
+            <h1>Joker Card AR</h1>
+            <p>Allow camera permission, then point at the Joker card.</p>
+            <button id="startBtn2" class="btn primary" style="width:100%;">Start AR</button>
+        </div>
     </div>
 
-  <a-scene
-  id="scene"
-  vr-mode-ui="enabled: false"
-  device-orientation-permission-ui="enabled: true"
-  renderer="antialias: true; colorManagement: true; alpha: true; logarithmicDepthBuffer: false;"
-  visible="false"
->
-  <a-entity
-    id="mindarSystem"
-    mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; uiScanning: no; uiLoading: no; autoStart: false; filterMinCF:0.0001; filterBeta: 0.001;"
-  ></a-entity>
+    <a-scene
+        id="scene"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: true"
+        renderer="colorManagement: true; antialias: true; alpha: true;"
+        visible="false"
+    >
+        <a-entity
+            id="mindarSystem"
+            mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiScanning: no;"
+        ></a-entity>
 
-  </a-scene>
+        <a-assets>
+            <a-asset-item id="jokerModel" src="./joker.glb"></a-asset-item>
+        </a-assets>
+
+        <a-camera id="cam" position="0 0 0" look-controls="enabled: false"></a-camera>
+
+        <a-entity id="target0" mindar-image-target="targetIndex: 0">
+            <a-gltf-model
+                id="joker"
+                src="#jokerModel"
+                position="0 0 0"
+                rotation="0 180 0"
+                scale="0.35 0.35 0.35"
+                visible="false"
+            ></a-gltf-model>
+        </a-entity>
+    </a-scene>
 
     <script src="script.js"></script>
-  </body>
+</body>
 </html>
