@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const target0 = $("target0");
     const statusEl = $("status");
     const overlay = $("overlay");
+    const ui = $("ui");
     const startBtn = $("startBtn");
     const startBtn2 = $("startBtn2");
     const stopBtn = $("stopBtn");
@@ -29,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
     async function startAR() {
         try {
             setStatus("Starting camera...");
-            scene.setAttribute("visible", "true");
 
             await new Promise((resolve) => {
                 if (scene.hasLoaded) resolve();
@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
             await arSystem.start();
 
             overlay.style.display = "none";
+            ui.style.display = "flex";
             startBtn.style.display = "none";
             stopBtn.style.display = "inline-block";
             setStatus("Point at the Joker card.");
@@ -55,8 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const arSystem = scene.systems["mindar-image-system"];
         if (arSystem) await arSystem.stop();
 
-        scene.setAttribute("visible", "false");
         overlay.style.display = "flex";
+        ui.style.display = "none";
         startBtn.style.display = "inline-block";
         stopBtn.style.display = "none";
         setStatus("Ready. Tap \"Start AR\".");
