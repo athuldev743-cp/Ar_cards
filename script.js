@@ -37,8 +37,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         await arSystem.start();
 
-        // Fix dark camera
-        scene.renderer.setClearColor(new THREE.Color(0x000000), 0);
+        // Wait for renderer to be ready then force transparent
+        scene.addEventListener('renderstart', () => {
+            scene.renderer.setClearColor(0x000000, 0);
+            scene.renderer.alpha = true;
+        }, { once: true });
+
+        // Also set immediately in case renderstart already fired
+        if (scene.renderer) {
+            scene.renderer.setClearColor(0x000000, 0);
+            scene.renderer.alpha = true;
+        }
 
         const fixLayout = () => {
             window.dispatchEvent(new Event('resize'));
@@ -46,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (canvas) {
                 canvas.style.width = window.innerWidth + 'px';
                 canvas.style.height = window.innerHeight + 'px';
+                canvas.style.background = 'transparent';
             }
         };
 
