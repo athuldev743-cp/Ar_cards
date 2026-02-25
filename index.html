@@ -12,7 +12,7 @@
     <div id="ui">
         <button id="startBtn" class="btn primary">Start AR</button>
         <button id="stopBtn" class="btn danger" style="display:none;">Back</button>
-        <div id="status" class="pill">Ready. Tap “Start AR”.</div>
+        <div id="status" class="pill">Ready. Tap "Start AR".</div>
         <button class="btn primary" onclick="window.location.reload()">Refresh</button>
     </div>
 
@@ -24,38 +24,38 @@
         </div>
     </div>
 
- <a-scene
-    id="scene"
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false"
-    renderer="alpha: true; colorManagement: true; antialias: true; logarithmicDepthBuffer: true;"
-    loading-screen="enabled: false"
-    visible="false"
->
-    <a-assets>
-        <a-asset-item id="jokerModel" src="joker.glb"></a-asset-item>
-    </a-assets>
-
-    <a-entity
-        id="mindarSystem"
-        mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiScanning: no; uiLoading: no; filterMinCF: 0.0001; filterBeta: 0.001;"
+    <a-scene
+        id="scene"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false"
+        renderer="alpha: true; colorManagement: true; antialias: true;"
+        loading-screen="enabled: false"
+        visible="false"
     >
-        <a-camera id="cam" position="0 0 0" look-controls="enabled: false"></a-camera>
+        <a-assets>
+            <a-asset-item id="jokerModel" src="joker.glb"></a-asset-item>
+        </a-assets>
 
-        <a-entity id="target0" mindar-image-target="targetIndex: 0">
-            <a-gltf-model
-                id="joker"
-                src="#jokerModel"
-                position="0 0 0"
-                rotation="0 0 0"
-                scale="0.35 0.35 0.35"
-                visible="false"
-                animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
-            ></a-gltf-model>
+        <a-entity
+            id="mindarSystem"
+            mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiScanning: no; uiLoading: no; filterMinCF: 0.0001; filterBeta: 0.001;"
+        >
+            <a-camera id="cam" position="0 0 0" look-controls="enabled: false"></a-camera>
+
+            <a-entity id="target0" mindar-image-target="targetIndex: 0">
+                <a-gltf-model
+                    id="joker"
+                    src="#jokerModel"
+                    position="0 0 0"
+                    rotation="0 0 0"
+                    scale="0.35 0.35 0.35"
+                    visible="false"
+                    animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
+                ></a-gltf-model>
+            </a-entity>
         </a-entity>
+    </a-scene>
 
-    </a-entity>  <!-- closes mindarSystem -->
-</a-scene>
     <script src="script.js"></script>
 </body>
 </html>

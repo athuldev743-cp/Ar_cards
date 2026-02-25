@@ -36,6 +36,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
             await arSystem.start();
 
+            const fixLayout = () => {
+                window.dispatchEvent(new Event('resize'));
+                const canvas = document.querySelector('.a-canvas');
+                if (canvas) {
+                    canvas.style.width = window.innerWidth + 'px';
+                    canvas.style.height = window.innerHeight + 'px';
+                }
+            };
+
+            fixLayout();
+            setTimeout(fixLayout, 300);
+            setTimeout(fixLayout, 1000);
+
             overlay.style.display = "none";
             startBtn.style.display = "none";
             stopBtn.style.display = "inline-block";
