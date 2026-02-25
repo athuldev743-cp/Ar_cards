@@ -9,48 +9,50 @@
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 </head>
 <body>
+    <div class="container">
+        <a-scene
+            id="scene"
+            mindar-image="imageTargetSrc: ./targets.mind; uiScanning: no; uiLoading: no; filterMinCF: 0.0001; filterBeta: 0.001;"
+            color-space="sRGB"
+            renderer="colorManagement: true; antialias: true;"
+            vr-mode-ui="enabled: false"
+            device-orientation-permission-ui="enabled: false"
+            loading-screen="enabled: false"
+            embedded
+        >
+            <a-assets>
+                <a-asset-item id="jokerModel" src="joker.glb"></a-asset-item>
+            </a-assets>
+
+            <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+            <a-entity id="target0" mindar-image-target="targetIndex: 0">
+                <a-gltf-model
+                    id="joker"
+                    src="#jokerModel"
+                    position="0 0 0"
+                    rotation="0 0 0"
+                    scale="0.35 0.35 0.35"
+                    visible="false"
+                    animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
+                ></a-gltf-model>
+            </a-entity>
+        </a-scene>
+    </div>
+
+    <!-- overlay shown until AR is ready -->
     <div id="overlay">
         <div id="overlayCard">
             <h1>Joker Card AR</h1>
             <p>Allow camera permission, then point at the Joker card.</p>
-            <button id="startBtn" class="btn">Start AR</button>
         </div>
     </div>
 
+    <!-- UI shown after AR starts -->
     <div id="ui">
-        <button id="stopBtn" class="btn danger">Back</button>
         <div id="status" class="pill">Loading...</div>
         <button class="btn" onclick="window.location.reload()">Refresh</button>
     </div>
-
-    <a-scene
-        id="scene"
-        mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiScanning: no; uiLoading: no; filterMinCF: 0.0001; filterBeta: 0.001;"
-        color-space="sRGB"
-        renderer="colorManagement: true; antialias: true;"
-        vr-mode-ui="enabled: false"
-        device-orientation-permission-ui="enabled: false"
-        loading-screen="enabled: false"
-        embedded
-    >
-        <a-assets>
-            <a-asset-item id="jokerModel" src="joker.glb"></a-asset-item>
-        </a-assets>
-
-        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-        <a-entity id="target0" mindar-image-target="targetIndex: 0">
-            <a-gltf-model
-                id="joker"
-                src="#jokerModel"
-                position="0 0 0"
-                rotation="0 0 0"
-                scale="0.35 0.35 0.35"
-                visible="false"
-                animation="property: rotation; to: 0 360 0; loop: true; dur: 6000; easing: linear"
-            ></a-gltf-model>
-        </a-entity>
-    </a-scene>
 
     <script src="script.js"></script>
 </body>
