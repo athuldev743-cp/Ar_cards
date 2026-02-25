@@ -2,121 +2,35 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Joker Card AR</title>
     <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="style.css">
 
-    <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <!-- MindAR A-Frame (UMD, works in single HTML without imports) -->
     <script src="https://unpkg.com/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-
-    <style>
-      html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
-      #ui {
-        position: fixed;
-        left: 12px; right: 12px; top: 12px;
-        display: flex; gap: 10px; align-items: center;
-        z-index: 9999;
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      }
-      .btn {
-        border: 0;
-        padding: 10px 14px;
-        border-radius: 12px;
-        font-size: 14px;
-        cursor: pointer;
-      }
-      .btn.primary { background: #fff; color: #000; }
-      .btn.danger { background: rgba(255, 80, 80, 0.95); color: #fff; }
-      .pill {
-        flex: 1;
-        padding: 10px 12px;
-        border-radius: 12px;
-        background: rgba(0,0,0,0.6);
-        color: #fff;
-        font-size: 14px;
-        line-height: 1.2;
-      }
-
-      /* Fullscreen overlay before AR starts */
-      #overlay {
-        position: fixed;
-        inset: 0;
-        background: radial-gradient(ellipse at center, rgba(0,0,0,0.75), rgba(0,0,0,0.92));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9998;
-        padding: 24px;
-      }
-      #overlayCard {
-        max-width: 520px;
-        width: 100%;
-        background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 18px;
-        padding: 18px;
-        color: #fff;
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      }
-      #overlayCard h1 {
-        margin: 0 0 8px 0;
-        font-size: 18px;
-      }
-      #overlayCard p {
-        margin: 0 0 12px 0;
-        opacity: 0.9;
-        font-size: 14px;
-        line-height: 1.35;
-      }
-      #tips {
-        margin: 0 0 14px 0;
-        padding-left: 18px;
-        opacity: 0.9;
-        font-size: 14px;
-      }
-      #tips li { margin: 6px 0; }
-
-      /* The AR scene should fill the screen */
-      a-scene {
-        position: fixed !important;
-        inset: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-      }
-
-      /* Hide default VR/AR buttons */
-      .a-enter-vr { display: none !important; }
-    </style>
   </head>
 
   <body>
-    <!-- Top UI -->
     <div id="ui">
       <button id="startBtn" class="btn primary">Start AR</button>
       <button id="stopBtn" class="btn danger" style="display:none;">Back</button>
       <div id="status" class="pill">Ready. Tap “Start AR”.</div>
     </div>
 
-    <!-- Overlay (forces user gesture for iOS + gives instructions) -->
     <div id="overlay">
       <div id="overlayCard">
         <h1>Joker Card AR</h1>
         <p>Tap <b>Start AR</b>, allow camera permission, then point the camera at the Joker card.</p>
         <ul id="tips">
-          <li>Use a <b>sharp, high-contrast</b> card image (no blur).</li>
-          <li>Avoid <b>glossy reflections</b> (matte print tracks better).</li>
-          <li>Keep the card well-lit. Don’t move too fast.</li>
+          <li>Use a <b>sharp, high-contrast</b> card image.</li>
+          <li>Avoid <b>glossy reflections</b> for better tracking.</li>
+          <li>Keep the card well-lit and steady.</li>
         </ul>
         <button id="startBtn2" class="btn primary" style="width:100%;">Start AR</button>
       </div>
     </div>
 
-    <!-- AR Scene (initially paused/hidden) -->
     <a-scene
       id="scene"
       embedded
@@ -125,28 +39,24 @@
       renderer="colorManagement: true; physicallyCorrectLights: true"
       visible="false"
     >
-      <!-- MindAR system (we will start/stop via JS) -->
       <a-entity
         id="mindarSystem"
-        mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; uiScanning: no; uiLoading: no;"
+        mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1; uiScanning: no; uiLoading: no; autoStart: false;"
       ></a-entity>
 
       <a-assets>
         <a-asset-item id="jokerModel" src="./joker.glb"></a-asset-item>
       </a-assets>
 
-      <!-- Camera -->
       <a-camera
         id="cam"
         position="0 0 0"
         look-controls="enabled: false"
       ></a-camera>
 
-      <!-- Lighting (helps model visibility) -->
       <a-entity light="type: hemisphere; intensity: 1.2; color: #ffffff; groundColor: #444444"></a-entity>
       <a-entity light="type: directional; intensity: 0.8" position="1 2 1"></a-entity>
 
-      <!-- Target index 0 -->
       <a-entity id="target0" mindar-image-target="targetIndex: 0">
         <a-gltf-model
           id="joker"
@@ -159,97 +69,6 @@
       </a-entity>
     </a-scene>
 
-    <script>
-      const $ = (id) => document.getElementById(id);
-      const statusEl = $("status");
-      const overlay = $("overlay");
-      const startBtn = $("startBtn");
-      const startBtn2 = $("startBtn2");
-      const stopBtn = $("stopBtn");
-      const scene = $("scene");
-      const joker = $("joker");
-      const target0 = $("target0");
-
-      const setStatus = (m) => { statusEl.textContent = m; console.log("[AR]", m); };
-
-      // Tracking events (more consistent user feedback)
-      target0.addEventListener("targetFound", () => {
-        joker.setAttribute("visible", "true");
-        setStatus("Joker found ✅ Keep the card steady.");
-      });
-      target0.addEventListener("targetLost", () => {
-        joker.setAttribute("visible", "false");
-        setStatus("Target lost… move closer, better light.");
-      });
-
-     // Remove the manual getUserMedia test. 
-// Let MindAR handle the heavy lifting:
-async function startAR() {
-  try {
-    scene.setAttribute("visible", "true");
-    setStatus("Starting AR...");
-    
-    // Grab the system directly from the scene
-    const arSystem = scene.systems["mindar-image-system"];
-    await arSystem.start(); 
-
-    overlay.style.display = "none";
-    startBtn.style.display = "none";
-    stopBtn.style.display = "inline-block";
-    setStatus("Point camera at the Joker card.");
-  } catch (e) {
-    setStatus("AR failed: " + e.message);
-  }
-}
-
-         
-      async function stopAR() {
-        try {
-          setStatus("Stopping AR…");
-          const arSystem = scene.systems["mindar-image-system"];
-          if (arSystem) {
-            await arSystem.stop();
-          }
-
-          // Hide 3D model + scene
-          joker.setAttribute("visible", "false");
-          scene.setAttribute("visible", "false");
-
-          // Reset UI
-          overlay.style.display = "flex";
-          startBtn.style.display = "inline-block";
-          stopBtn.style.display = "none";
-          startBtn.disabled = false;
-          startBtn2.disabled = false;
-          startBtn.textContent = "Start AR";
-          setStatus("Ready. Tap “Start AR”.");
-        } catch (e) {
-          console.error(e);
-          setStatus("Stop failed: " + (e?.message || e));
-        }
-      }
-
-      // Buttons
-      startBtn.addEventListener("click", () => {
-        startBtn.disabled = true;
-        startBtn.textContent = "Starting…";
-        startBtn2.disabled = true;
-        startAR();
-      });
-      startBtn2.addEventListener("click", () => {
-        startBtn.disabled = true;
-        startBtn.textContent = "Starting…";
-        startBtn2.disabled = true;
-        startAR();
-      });
-      stopBtn.addEventListener("click", stopAR);
-
-      // Extra: if user navigates away / app goes background, stop safely
-      document.addEventListener("visibilitychange", () => {
-        if (document.hidden && stopBtn.style.display !== "none") {
-          stopAR();
-        }
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
 </html>
