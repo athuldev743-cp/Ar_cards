@@ -25,28 +25,34 @@ document.addEventListener("DOMContentLoaded", () => {
         setStatus("Target lost...");
     });
 
-    async function startAR() {
-        try {
-            setStatus("Starting camera...");
-            scene.setAttribute("visible", "true");
-            
-            const arSystem = scene.systems["mindar-image-system"];
-            await arSystem.start(); 
+  async function startAR() {
+    try {
+        setStatus("Starting camera...");
+        
+        // 1. Make scene visible
+        scene.setAttribute("visible", "true");
+        
+        // 2. CRITICAL: Remove any default background color
+        scene.removeAttribute("background");
+        
+        const arSystem = scene.systems["mindar-image-system"];
+        await arSystem.start(); 
 
-            // Fix camera resize glitch
-            setTimeout(() => {
-                window.dispatchEvent(new Event('resize'));
-            }, 500);
+        // 3. Fix camera resize glitch (ensures full-screen coverage)
+        setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+        }, 500);
 
-            overlay.style.display = "none";
-            startBtn.style.display = "none";
-            stopBtn.style.display = "inline-block";
-            setStatus("Point at the Joker card.");
-        } catch (e) {
-            setStatus("AR Error: " + e.message);
-            startBtn.disabled = false;
-        }
+        overlay.style.display = "none";
+        startBtn.style.display = "none";
+        stopBtn.style.display = "inline-block";
+        setStatus("Point at the Joker card.");
+    } catch (e) {
+        setStatus("AR Error: " + e.message);
+        startBtn.disabled = false;
+        startBtn.textContent = "Start AR";
     }
+}
 
     async function stopAR() {
         const arSystem = scene.systems["mindar-image-system"];

@@ -23,13 +23,12 @@
         </div>
     </div>
 
-    <a-scene
-        id="scene"
-        vr-mode-ui="enabled: false"
-        device-orientation-permission-ui="enabled: true"
-        renderer="colorManagement: true; antialias: true; alpha: true;"
-        visible="false"
-    >
+   <a-scene
+  id="scene"
+  vr-mode-ui="enabled: false"
+  renderer="alpha: true; colorManagement: true;"
+  visible="false"
+>
         <a-entity
             id="mindarSystem"
             mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiScanning: no;"
