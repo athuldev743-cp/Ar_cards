@@ -3,7 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>King Card AR</title>
+    <title>Joker Card AR</title>
+
+    <link rel="icon" href="data:,">
 
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -22,40 +24,38 @@
   </head>
 
   <body>
-    <div class="hint">Point camera at the King card</div>
+    <div class="hint">Point camera at the Joker card</div>
     <div id="ar"></div>
 
     <script>
       async function start() {
         const mindarThree = new window.MINDAR.IMAGE.MindARThree({
           container: document.querySelector("#ar"),
-          imageTargetSrc: "./public/joker.png",
+          imageTargetSrc: "./targets.mind", // ✅ compiled target file
           maxTrack: 1,
         });
 
         const { renderer, scene, camera } = mindarThree;
 
-        // lights
         scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1.2));
         const dir = new THREE.DirectionalLight(0xffffff, 0.8);
         dir.position.set(1, 2, 1);
         scene.add(dir);
 
-        // ✅ anchor for target index 0 (first image you compiled)
         const anchor = mindarThree.addAnchor(0);
 
-        // load GLB
         const loader = new THREE.GLTFLoader();
-        loader.load("./public/joker.glb", (gltf) => {
-          const king = gltf.scene;
+        loader.load("./joker.glb", (gltf) => {
+          const joker = gltf.scene;
 
-          // Tune these 3 values to fit perfectly on the card:
-          king.scale.set(0.35, 0.35, 0.35);   // size
-          king.position.set(0, 0, 0);         // center
-          king.rotation.set(0, 0, 0);         // rotate if needed
+          joker.scale.set(0.35, 0.35, 0.35);
+          joker.position.set(0, 0, 0);
+          joker.rotation.set(0, 0, 0);
 
-          // ✅ THIS is the “projection/binding”
-          anchor.group.add(king);
+          anchor.group.add(joker);
+        }, undefined, (err) => {
+          console.error("GLB load error:", err);
+          alert("Failed to load joker.glb — check path and hosting.");
         });
 
         await mindarThree.start();
