@@ -14,29 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("[AR]", m);
     };
 
-    // defined FIRST before startAR
-    const fixLayout = () => {
-        window.dispatchEvent(new Event('resize'));
-
-        const canvas = document.querySelector('.a-canvas');
-        if (canvas) {
-            canvas.style.position = 'fixed';
-            canvas.style.top = '0';
-            canvas.style.left = '0';
-            canvas.style.width = '100vw';
-            canvas.style.height = '100vh';
-        }
-
-        const mindarOverlay = document.querySelector('.mindar-ui-overlay');
-        if (mindarOverlay) {
-            mindarOverlay.style.position = 'fixed';
-            mindarOverlay.style.top = '0';
-            mindarOverlay.style.left = '0';
-            mindarOverlay.style.width = '100vw';
-            mindarOverlay.style.height = '100vh';
-        }
-    };
-
     target0.addEventListener("targetFound", () => {
         setTimeout(() => {
             joker.setAttribute("visible", "true");
@@ -55,22 +32,14 @@ document.addEventListener("DOMContentLoaded", () => {
             scene.setAttribute("visible", "true");
 
             await new Promise((resolve) => {
-                if (scene.hasLoaded) {
-                    resolve();
-                } else {
-                    scene.addEventListener("loaded", resolve, { once: true });
-                }
+                if (scene.hasLoaded) resolve();
+                else scene.addEventListener("loaded", resolve, { once: true });
             });
 
             const arSystem = scene.systems["mindar-image-system"];
             if (!arSystem) throw new Error("MindAR system not ready.");
 
             await arSystem.start();
-
-            fixLayout();
-            setTimeout(fixLayout, 300);
-            setTimeout(fixLayout, 800);
-            setTimeout(fixLayout, 1500);
 
             overlay.style.display = "none";
             startBtn.style.display = "none";
