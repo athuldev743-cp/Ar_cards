@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setStatus("Target lost...");
     });
 
-   async function startAR() {
+  async function startAR() {
     try {
         setStatus("Starting camera...");
         scene.setAttribute("visible", "true");
@@ -35,12 +35,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const arSystem = scene.systems["mindar-image-system"];
         if (!arSystem) throw new Error("MindAR system not ready.");
 
-        await arSystem.start(); 
+        await arSystem.start();
 
-        // CRITICAL: Force the canvas to snap to the full screen
+        // Fix dark camera
+        scene.renderer.setClearColor(new THREE.Color(0x000000), 0);
+
         const fixLayout = () => {
             window.dispatchEvent(new Event('resize'));
-            // Manually force canvas style if browser is being stubborn
             const canvas = document.querySelector('.a-canvas');
             if (canvas) {
                 canvas.style.width = window.innerWidth + 'px';
