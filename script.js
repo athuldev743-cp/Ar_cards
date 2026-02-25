@@ -14,10 +14,13 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("[AR]", m);
     };
 
-    target0.addEventListener("targetFound", () => {
+  target0.addEventListener("targetFound", () => {
+    // A tiny delay before showing can sometimes hide the initial 'snap' jitter
+    setTimeout(() => {
         joker.setAttribute("visible", "true");
         setStatus("Joker found ✅");
-    });
+    }, 100);
+});
 
     target0.addEventListener("targetLost", () => {
         joker.setAttribute("visible", "false");
